@@ -86,7 +86,7 @@ const demoAnime = [
 let anime=[], activeHero=0, activeFilter="all", currentAnime=null, searchTerm="";
 const $=id=>document.getElementById(id);
 const safe=(v,fallback="")=>v==null?fallback:String(v);
-function normalize(item,index){
+ normfunctionalize(item,index){
  const genres=Array.isArray(item.genres)?item.genres.join(", "):safe(item.genre,"Anime");
  return {id:item.id??index+1,title:safe(item.title||item.name,"Untitled"),poster:safe(item.poster||item.image||item.cover,"https://placehold.co/1280x800/151320/bdaeff?text=Kurova"),score:Number(item.score||item.rating||0),year:item.year||item.releaseYear||"—",genre:genres,episodes:item.episodes||item.episode_count||"?",duration:item.duration||"24m",description:safe(item.description||item.synopsis,"Belum ada sinopsis untuk anime ini.")};
 }
@@ -132,53 +132,131 @@ function getSaved(){try{return JSON.parse(localStorage.getItem("kurova-watchlist
 function isSaved(id){return getSaved().includes(id)}
 function toggleSave(a){
  let saved=getSaved();saved=saved.includes(a.id)?saved.filter(x=>x!==a.id):[...saved,a.id];
- localStorage.setItem("kurova-watchlist",JSON.stringify(saved));
- $("modalSave").textContent=isSaved(a.id)?"✓ Tersimpan":"＋ Watchlist";
- toast(isSaved(a.id)?"Ditambahkan ke watchlist":"Dihapus dari watchlist");
+function normalize(a){
+  return {
+    id:a.mal_id ?? a.id,
+    title:a.title,
+    poster:a.images?.jpg?.large_image_url || a.poster || "",
+    score:a.score ?? 0,
+    year:a.year || "",
+    genre:a.genres ? a.genres.map(g=>g.name).join(", ") : (a.genre || "Anime"),
+    episodes:a.episodes || "?",
+    duration:(a.duration || "").replace(" per ep",""),
+    description:a.synopsis || a.description || "Belum ada sinopsis.",
+    trailer:a.trailer?.url || ""
+  };
 }
-function playAnime(a){toast(`Preview: ${a.title} · Episode 1`);}
-function filterBy(filter){activeFilter=filter;document.querySelectorAll(".chip").forEach(b=>b.classList.toggle("active",b.dataset.filter===filter));renderGrid();}
-async function loadAnime(){
- anime=demoAnime.map(normalize);
- renderAll();
- if(!API_URL)return;
- try{
-  const response=await fetch(API_URL,{headers:{Accept:"application/json"}});
-  if(!response.ok)throw new Error(`HTTP ${response.status}`);
-  const payload=await response.json();
-  const list=Array.isArray(payload)?payload:(payload.data||payload.results||[]);
-  if(!Array.isArray(list)||!list.length)throw new Error("Format API tidak dikenali");
-  anime=list.map(normalize);activeHero=0;renderAll();toast("Data anime berhasil dimuat");
- }catch(error){console.warn("Kurova API:",error);toast("API gagal dimuat, memakai data demo");}
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let filter = "all", query = "", current = null;
+
+function cardHTML(a, isNew){
+  return `<div class="card" data-id="${a.id}">
+    <div class="poster">
+      <img src="${a.poster}" alt="" loading="lazy">
+      <span class="rating">${Number(a.score).toFixed(1)}</span>
+      ${isNew ? '<span class="badge-new">BARU</span>' : ''}
+      <div class="play">▶</div>
+    </div>
+    <div class="card-info">
+      <div class="card-title">${esc(a.title)}</div>
+      <div class="card-meta">${a.year} • ${a.episodes} eps</div>
+    </div>
+  </div>`;
 }
-function renderAll(){renderHero();renderContinue();renderGrid();}
-$("searchForm").addEventListener("submit",e=>{e.preventDefault();searchTerm=$("search").value.trim();renderGrid();$("trending").scrollIntoView({behavior:"smooth"});});
-$("search").addEventListener("input",e=>{searchTerm=e.target.value.trim();renderGrid();});
-$("categories").addEventListener("click",e=>{const b=e.target.closest("[data-filter]");if(b)filterBy(b.dataset.filter);});
-document.addEventListener("click",e=>{
- const dot=e.target.closest("[data-slide]");if(dot){activeHero=Number(dot.dataset.slide);renderHero();return;}
- const card=e.target.closest("[data-id]");if(card){const a=anime.find(x=>String(x.id)===card.dataset.id);openModal(a);}
+
+function renderHero(i){
+  activeHero = i;
+  const a = anime[i];
+  $("heroBg").style.backgroundImage = `url(${a.poster})`;
+  $("heroTitle").textContent = a.title;
+  $("heroYear").textContent = a.year || "—";
+  $("heroGenre").textContent = a.genre.split(",")[0];
+  $("heroScore").textContent = "★ " + Number(a.score).toFixed(1);
+  $("heroDesc").textContent = a.description.slice(0,220) + "...";
+  $("heroDots").innerHTML = anime.slice(0,5).map((_,n)=>
+    `<button class="dot ${n===i?'active':''}" data-i="${n}"></button>`).join("");
+}
+
+function renderGrids(){
+  const list = anime
+    .filter(a => filter==="all" || a.genre.toLowerCase().includes(filter))
+    .filter(a => a.title.toLowerCase().includes(query))
+    .sort((x,y)=>y.score-x.score);
+  $("animeGrid").innerHTML = list.map(a=>cardHTML(a,false)).join("");
+  $("animeCount").textContent = list.length + " anime";
+  $("empty").style.display = list.length ? "none" : "block";
+  $("newGrid").innerHTML = anime.slice(-10).map(a=>cardHTML(a,true)).join("");
+  $("continueGrid").innerHTML = anime.slice(0,4).map(a=>`
+    <div class="continue-card" data-id="${a.id}">
+      <img src="${a.poster}" alt="">
+      <div class="continue-info">
+        <div class="continue-title">${esc(a.title)}</div>
+        <div class="progress"><span></span></div>
+        <div class="continue-time">Episode 1</div>
+      </div>
+    </div>`).join("");
+}
+
+function openModal(id){
+  const a = anime.find(x=>String(x.id)===String(id));
+  if(!a) return;
+  current = a;
+  $("modalCover").style.backgroundImage = `url(${a.poster})`;
+  $("modalTitle").textContent = a.title;
+  $("modalMeta").innerHTML =
+    `<span>${a.year}</span><span>${esc(a.genre)}</span><span>★ ${Number(a.score).toFixed(1)}</span><span>${a.episodes} eps</span>`;
+  $("modalDescription").textContent = a.description;
+  $("modal").classList.add("open");
+}
+
+function watch(a){
+  if(a.trailer) window.open(a.trailer,"_blank");
+  else openModal(a.id);
+}
+
+document.addEventListener("click", e=>{
+  const card = e.target.closest(".card, .continue-card");
+  if(card) return openModal(card.dataset.id);
+  const dot = e.target.closest(".dot");
+  if(dot) return renderHero(+dot.dataset.i);
+  const chip = e.target.closest(".chip");
+  if(chip){
+    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+    chip.classList.add("active");
+    filter = chip.dataset.filter;
+    return renderGrids();
+  }
+  if(e.target.closest(".modal-content .btn.primary")) return watch(current);
+  if(e.target.id==="modal" || e.target.id==="closeModal") $("modal").classList.remove("open");
 });
-document.addEventListener("keydown",e=>{
- if((e.key==="Enter"||e.key===" ")&&e.target.matches(".card,.continue-card")){e.preventDefault();const a=anime.find(x=>String(x.id)===e.target.dataset.id);openModal(a);}
- if(e.key==="Escape")closeModal();
+
+$("watchBtn").onclick  = () => watch(anime[activeHero]);
+$("detailBtn").onclick = () => openModal(anime[activeHero].id);
+$("search").addEventListener("input", e=>{
+  query = e.target.value.toLowerCase();
+  renderGrids();
 });
-$("detailBtn").addEventListener("click",()=>openModal(anime[activeHero]));
-$("watchBtn").addEventListener("click",()=>playAnime(anime[activeHero]));
-$("modalWatch").addEventListener("click",()=>{playAnime(currentAnime);closeModal();});
-$("modalSave").addEventListener("click",()=>currentAnime&&toggleSave(currentAnime));
-$("closeModal").addEventListener("click",closeModal);
-$("modal").addEventListener("click",e=>{if(e.target===$("modal"))closeModal();});
-function showSaved(){const saved=getSaved();if(!saved.length){toast("Watchlist masih kosong");return;}const list=anime.filter(a=>saved.includes(a.id));toast(`Watchlist: ${list.map(a=>a.title).join(", ")}`);}
-$("watchlistBtn").addEventListener("click",showSaved);$("sideWatchlist").addEventListener("click",e=>{e.preventDefault();showSaved();});
-$("historyBtn").addEventListener("click",()=>toast("Riwayat tontonan demo tersedia di bagian Lanjutkan"));
-$("sideHistory").addEventListener("click",e=>{e.preventDefault();toast("Riwayat tontonan demo tersedia di bagian Lanjutkan");});
-$("topRatedLink").addEventListener("click",()=>{anime.sort((a,b)=>b.score-a.score);renderAll();});
-$("aboutBtn").addEventListener("click",e=>{e.preventDefault();toast("Kurova — Anime, Your Way.");});
-$("settingsBtn").addEventListener("click",e=>{e.preventDefault();toast("Pengaturan akan tersedia pada pembaruan berikutnya");});
-let slideTimer=setInterval(()=>{if(!document.hidden&&anime.length>1){activeHero=(activeHero+1)%Math.min(5,anime.length);renderHero();}},6500);
-document.addEventListener("visibilitychange",()=>{if(document.hidden)clearInterval(slideTimer);else slideTimer=setInterval(()=>{activeHero=(activeHero+1)%Math.min(5,anime.length);renderHero();},6500);});
-loadAnime();
+document.addEventListener("keydown", e=>{
+  if(e.key==="Escape") $("modal").classList.remove("open");
+});
+
+async function load(){
+  try{
+    const r = await fetch(API_URL);
+    const j = await r.json();
+    anime = (j.data || j).map(normalize);
+  }catch(err){
+    anime = demoAnime.map(normalize);
+  }
+  if(!anime.length) anime = demoAnime.map(normalize);
+  renderHero(0);
+  renderGrids();
+  setInterval(()=>renderHero((activeHero+1) % Math.min(5, anime.length)), 7000);
+}
+load();
+
 </script>
 </body>
 </html>
