@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download Video TikTok Tanpa Watermark - SaveTok</title>
+<meta name="description" content="Unduh video TikTok tanpa watermark dalam MP4 HD atau MP3. Gratis, tanpa login, tanpa instal aplikasi.">
+<style>
+:root{--bg:#fff;--panel:#f6f7f9;--line:#dfe2e8;--text:#161823;--mute:#5d6370;--accent:#e6234b;--accent-text:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#121316;--panel:#1b1d22;--line:#2d3038;--text:#eceef2;--mute:#9aa0ac;--accent:#ff4d6d;--accent-text:#1a0a0e}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:inherit}
+.wrap{max-width:720px;margin:0 auto;padding:0 18px}
+
+header{border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{font-weight:700;text-decoration:none;font-size:1.1rem}
+nav{display:flex;gap:18px;font-size:.92rem}
+nav a{color:var(--mute);text-decoration:none}
+nav a:hover{color:var(--text)}
+
+.hero{padding:44px 0 36px}
+h1{font-size:clamp(1.7rem,6vw,2.3rem);line-height:1.2;margin:0 0 8px}
+.lead{color:var(--mute);margin:0 0 22px}
+.row{display:flex;gap:8px}
+input{flex:1;min-width:0;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+input:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
+button,.btn{font:inherit;font-weight:600;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);padding:12px 16px;cursor:pointer;text-decoration:none;text-align:center;display:inline-block}
+button:hover,.btn:hover{background:var(--panel)}
+button:focus-visible,.btn:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.primary,.primary:hover{background:var(--accent);border-color:var(--accent);color:var(--accent-text)}
+.primary:hover{filter:brightness(.95)}
+.submit{width:100%;margin-top:8px}
+button[disabled]{opacity:.6;cursor:wait}
+.hint{font-size:.85rem;color:var(--mute);margin:10px 0 0}
+
+#result{margin-top:24px}
+#result:empty{display:none}
+.card{border:1px solid var(--line);border-radius:10px;padding:14px}
+.info{display:flex;gap:14px}
+.info img{width:84px;height:112px;object-fit:cover;border-radius:6px;background:var(--panel);flex:none}
+.info b{display:block}
+.info small{color:var(--mute);display:block}
+.info p{margin:6px 0 0;font-size:.92rem;color:var(--mute);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.acts{display:grid;gap:8px;margin-top:14px}
+.thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:14px}
+.thumbs img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px}
+.msg{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--panel)}
+.msg.err{border-color:var(--accent)}
+
+section{padding:34px 0;border-top:1px solid var(--line)}
+h2{font-size:1.3rem;margin:0 0 14px}
+ol,ul{margin:0;padding-left:22px}
+li{margin-bottom:8px}
+li::marker{color:var(--mute)}
+details{border-bottom:1px solid var(--line);padding:12px 0}
+details:first-of-type{border-top:1px solid var(--line)}
+summary{cursor:pointer;font-weight:600}
+details p{margin:8px 0 0;color:var(--mute)}
+.note{color:var(--mute);font-size:.92rem}
+
+footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--mute);font-size:.85rem}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:9px 14px;border-radius:8px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}#toast{transition:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#">SaveTok</a>
+    <nav>
+      <a href="#cara">Cara pakai</a>
+      <a href="#fitur">Fitur</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <div class="hero">
+      <h1>Download Video TikTok Tanpa Watermark</h1>
+      <p class="lead">Tempel link video, lalu simpan sebagai MP4 atau MP3. Gratis dan tanpa login.</p>
+
+      <form id="form">
+        <div class="row">
+          <input id="url" type="url" inputmode="url" placeholder="Tempel link TikTok di sini" autocomplete="off" required aria-label="Link video TikTok">
+          <button type="button" id="paste">Tempel</button>
+        </div>
+        <button class="primary submit" id="go" type="submit">Download</button>
+      </form>
+      <p class="hint">Contoh: https://vt.tiktok.com/ZS... atau https://www.tiktok.com/@user/video/...</p>
+
+      <div id="result" aria-live="polite"></div>
+    </div>
+
+    <section id="cara">
+      <h2>Cara download video TikTok</h2>
+      <ol>
+        <li>Buka aplikasi TikTok, pilih video yang ingin disimpan, lalu ketuk <b>Bagikan</b> dan <b>Salin tautan</b>.</li>
+        <li>Buka halaman ini, lalu tempel tautan ke kolom di atas (atau ketuk tombol <b>Tempel</b>).</li>
+        <li>Ketuk <b>Download</b> dan tunggu beberapa detik sampai info video muncul.</li>
+        <li>Pilih format yang kamu mau: MP4 HD, MP4 SD, atau MP3. File akan tersimpan di folder Unduhan.</li>
+      </ol>
+    </section>
+
+    <section id="fitur">
+      <h2>Fitur</h2>
+      <ul>
+        <li>Video tanpa watermark, kualitas HD jika tersedia.</li>
+        <li>Unduh audio saja dalam format MP3.</li>
+        <li>Postingan foto atau slideshow bisa diunduh per gambar.</li>
+        <li>Bisa dipakai di HP maupun komputer, tanpa instal aplikasi.</li>
+        <li>Tanpa login dan tanpa menyimpan data pribadi.</li>
+      </ul>
+    </section>
+
+    <section id="faq">
+      <h2>Pertanyaan umum</h2>
+      <details>
+        <summary>Apakah layanan ini gratis?</summary>
+        <p>Ya, gratis dan tidak ada batas jumlah unduhan.</p>
+      </details>
+      <details>
+        <summary>Hasil unduhan tersimpan di mana?</summary>
+        <p>Di Android dan komputer, file masuk ke folder Unduhan (Download). Di iPhone, buka Safari lalu cek aplikasi Berkas (Files) di folder Unduhan, setelah itu bisa disimpan ke Foto.</p>
+      </details>
+      <details>
+        <summary>Kenapa video gagal diambil?</summary>
+        <p>Penyebab yang paling umum: akun bersifat privat, video sudah dihapus, tautan salah atau terpotong, atau server sedang sibuk. Salin ulang tautan dari TikTok lalu coba lagi.</p>
+      </details>
+      <details>
+        <summary>Bisakah mengunduh video dari akun privat?</summary>
+        <p>Tidak. Hanya video publik yang bisa diunduh.</p>
+      </details>
+      <details>
+        <summary>Apakah boleh membagikan ulang video yang diunduh?</summary>
+        <p>Video tetap milik kreatornya. Gunakan untuk keperluan pribadi, atau minta izin kreator dan cantumkan kredit sebelum mengunggah ulang.</p>
+      </details>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    SaveTok tidak berafiliasi dengan TikTok atau ByteDance. Semua video adalah hak milik pemiliknya masing-masing.
+  </div>
+</footer>
+
+<div id="toast" role="status"></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const input = $('#url'), result = $('#result'), go = $('#go');
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num = (n) => { n = +n || 0; return n >= 1e6 ? (n/1e6).toFixed(1)+' jt' : n >= 1e3 ? (n/1e3).toFixed(1)+' rb' : String(n); };
+const file = (url, name) => `/api/file?url=${encodeURIComponent(url)}&name=${encodeURIComponent(name)}`;
+
+function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 2200); }
+
+$('#paste').onclick = async () => {
+  try { input.value = await navigator.clipboard.readText(); input.focus(); }
+  catch { toast('Izin clipboard ditolak. Tempel manual ya.'); }
+};
+
+$('#form').onsubmit = async (e) => {
+  e.preventDefault();
+  go.disabled = true; go.textContent = 'Memproses...';
+  result.innerHTML = '<div class="msg">Mengambil info video...</div>';
+  try {
+    const r = await fetch('/api/download?url=' + encodeURIComponent(input.value.trim()));
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Gagal mengambil video.');
+    render(d);
+  } catch (err) {
+    result.innerHTML = `<div class="msg err">${esc(err.message)}</div>`;
+  } finally {
+    go.disabled = false; go.textContent = 'Download';
+  }
+};
+
+function render(d){
+  const base = 'savetok-' + (d.id || Date.now());
+  const best = d.videoHd || d.video;
+  let acts = '';
+  if (best) acts += `<a class="btn primary" href="${file(best, base + '.mp4')}">Download MP4${d.videoHd ? ' HD' : ''}</a>`;
+  if (d.videoHd && d.video) acts += `<a class="btn" href="${file(d.video, base + '-sd.mp4')}">Download MP4 SD (lebih kecil)</a>`;
+  if (d.music) acts += `<a class="btn" href="${file(d.music, base + '.mp3')}">Download MP3</a>`;
+  const imgs = d.images.length
+    ? `<div class="thumbs">${d.images.map((u, i) => `<a href="${file(u, base + '-' + (i + 1) + '.jpg')}" aria-label="Unduh foto ${i + 1}"><img src="${esc(u)}" alt="Foto ${i + 1}" loading="lazy"></a>`).join('')}</div>` : '';
+  result.innerHTML = `<div class="card">
+    <div class="info">
+      <img src="${esc(d.cover)}" alt="Cover video">
+      <div>
+        <b>${esc(d.author.name)}</b>
+        <small>@${esc(d.author.id)}</small>
+        <small>${num(d.plays)} tayangan, ${num(d.likes)} suka, ${d.duration || 0} detik</small>
+        <p>${esc(d.title)}</p>
+      </div>
+    </div>
+    ${imgs}
+    <div class="acts">${acts}</div>
+  </div>`;
+}
+</script>
+</body>
+</html>
