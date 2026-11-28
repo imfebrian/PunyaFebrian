@@ -81,12 +81,12 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke
 
 /* latar: dua cahaya yang bergeser pelan + grain halus */
 .aur{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
-.aur i{position:absolute;width:62vmax;height:62vmax;border-radius:50%;filter:blur(90px);will-change:transform}
+.aur i{position:absolute;width:56vmax;height:56vmax;border-radius:50%;filter:blur(70px);will-change:transform}
 .aur i:nth-child(1){background:var(--aur1);left:-18vmax;top:-26vmax;animation:drift1 26s ease-in-out infinite alternate}
 .aur i:nth-child(2){background:var(--aur2);right:-22vmax;top:18vh;animation:drift2 32s ease-in-out infinite alternate}
 @keyframes drift1{to{transform:translate(14vmax,10vmax) scale(1.1)}}
 @keyframes drift2{to{transform:translate(-12vmax,-8vmax) scale(.92)}}
-.grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
 /* header */
 header{position:sticky;top:0;z-index:20;backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);background:color-mix(in srgb,var(--bg) 70%,transparent);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0)}
@@ -104,7 +104,7 @@ nav a:hover{color:var(--text);background:var(--panel)}
 .hero{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.82fr);grid-template-areas:"copy stage" "result stage";column-gap:64px;align-items:start;padding:64px 0 56px}
 .copy{grid-area:copy;min-width:0}
 .stage-col{grid-area:stage;position:sticky;top:92px;display:flex;justify-content:center}
-.stage{width:100%;display:flex;justify-content:center}
+.stage{width:100%;display:flex;justify-content:center;scroll-margin-top:80px}
 .result-col{grid-area:result;min-width:0}
 h1{font:800 clamp(2.3rem,5.4vw,4rem)/1.04 var(--display);letter-spacing:-.035em;margin:0 0 18px}
 .lead{color:var(--mute);font-size:1.1rem;max-width:34em;margin:0 0 30px}
@@ -231,16 +231,16 @@ h2{font:800 clamp(1.7rem,3.6vw,2.5rem)/1.1 var(--display);letter-spacing:-.03em;
 .rv{opacity:0;transform:translateY(22px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
 .rv.in{opacity:1;transform:none}
 
-.how{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line)}
+.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--line)}
 .how li{list-style:none;padding:28px 28px 8px 0;position:relative}
 .how li+li{padding-left:28px;border-left:1px solid var(--line)}
 .how .n{font:800 3.2rem/1 var(--display);color:var(--acc);letter-spacing:-.05em}
 .how h3{font:700 1.2rem var(--display);margin:14px 0 6px}
 .how p{margin:0;color:var(--mute)}
 .how{padding:0;margin:0}
-@media (max-width:760px){.how{grid-template-columns:1fr}.how li,.how li+li{padding:24px 0;border-left:0;border-bottom:1px solid var(--line)}}
+@media (max-width:760px){.how{grid-template-columns:minmax(0,1fr)}.how li,.how li+li{padding:24px 0;border-left:0;border-bottom:1px solid var(--line)}}
 
-.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
 .bx{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);padding:26px;position:relative;overflow:hidden;transition:border-color .3s,transform .5s var(--ease)}
 .bx:hover{border-color:color-mix(in srgb,var(--acc) 50%,var(--line));transform:translateY(-3px)}
 .bx h3{font:700 1.2rem/1.2 var(--display);margin:0 0 8px;letter-spacing:-.01em}
@@ -254,11 +254,11 @@ h2{font:800 clamp(1.7rem,3.6vw,2.5rem)/1.1 var(--display);letter-spacing:-.03em;
 .lanes i::after{content:"";position:absolute;inset:0;background:var(--acc);transform:translateX(-100%);animation:lane 2.4s var(--ease) infinite}
 .lanes i:nth-child(2)::after{animation-delay:.18s}.lanes i:nth-child(3)::after{animation-delay:.36s}.lanes i:nth-child(4)::after{animation-delay:.54s}
 @keyframes lane{60%,100%{transform:translateX(0)}}
-@media (max-width:860px){.bento{grid-template-columns:1fr 1fr}.bx.a{grid-column:span 2;grid-row:auto}.bx.b,.bx.c,.bx.d,.bx.e,.bx.f{grid-column:span 1}}
-@media (max-width:520px){.bento{grid-template-columns:1fr}.bx.b,.bx.c,.bx.d,.bx.e,.bx.f{grid-column:span 1}}
+@media (max-width:860px){.bento{grid-template-columns:repeat(2,minmax(0,1fr))}.bx.a{grid-column:span 2;grid-row:auto}.bx.b,.bx.c,.bx.d,.bx.e,.bx.f{grid-column:span 1}}
+@media (max-width:520px){.bento{grid-template-columns:minmax(0,1fr)}.bx.a,.bx.b,.bx.c,.bx.d,.bx.e,.bx.f{grid-column:auto;grid-row:auto}.bx.a h3{font-size:1.5rem}}
 
 #riwayat[hidden]{display:none}
-.hist{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.hist{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
 .hist button{position:relative;padding:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;aspect-ratio:3/4;background:var(--panel2);cursor:pointer;color:#fff;text-align:left}
 .hist img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s var(--ease)}
 .hist button:hover img{transform:scale(1.06)}
@@ -691,9 +691,9 @@ function render(d) {
   const c = navigator.connection;
   const slow = c && (c.saveData || /(^|-)2g$|3g/.test(c.effectiveType || ''));
   if (!slow && !d.images.length && best) {
-    const go = () => job('hd', best, base + '.mp4', 'video/mp4', d.videoHd ? d.hdSize : d.size);
-    vid.addEventListener('canplay', go, { once: true });
-    setTimeout(go, 4000);
+    const warm = () => job('hd', best, base + '.mp4', 'video/mp4', d.videoHd ? d.hdSize : d.size);
+    vid.addEventListener('canplay', warm, { once: true });
+    setTimeout(warm, 4000);
   }
 }
 
@@ -717,7 +717,7 @@ async function run(raw) {
     setSteps(3);
     render(d); remember(d, link);
     setTimeout(() => id === rid && setSteps(4), 700);
-    if (innerWidth < 900) res.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
+    if (innerWidth < 900) stage.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
   } catch (err) {
     if (id !== rid) return;
     setSteps(0); showErr(err.message || 'Terjadi kesalahan.');
@@ -758,7 +758,7 @@ function remember(d, link) {
 function drawH() {
   const h = readH(), sec = $('#riwayat');
   sec.hidden = !h.length;
-  $('#hist').innerHTML = h.map((x, i) => `<button type="button" data-i="${i}" aria-label="Buka lagi video dari ${esc(x.who)}"><img src="${esc(x.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer"><span>@${esc(x.who)}</span></button>`).join('');
+  $('#hist').innerHTML = h.map((x, i) => `<button type="button" data-i="${i}" aria-label="Buka lagi video dari ${esc(x.who)}">${x.cover ? `<img src="${esc(x.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ''}<span>@${esc(x.who)}</span></button>`).join('');
 }
 $('#hist').onclick = (e) => { const b = e.target.closest('button'); if (!b) return; const x = readH()[+b.dataset.i]; if (x) { scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' }); run(x.link); } };
 $('#clr').onclick = () => { try { localStorage.removeItem(HK); } catch {} drawH(); toast('Riwayat dihapus.'); };
