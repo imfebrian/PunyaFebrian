@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://GANTI-DOMAIN.com/sitemap.xml
+Sitemap: https://klipora-three.vercel.app/sitemap.xml
